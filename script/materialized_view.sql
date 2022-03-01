@@ -1,5 +1,7 @@
 DELIMITER $$
 
+/* 8.1*/ 
+
 DROP TABLE IF EXISTS mv_affidabilita_utente$$
 CREATE TABLE mv_affidabilita_utente(
 	NomeUtente VARCHAR (15) NOT NULL, 
