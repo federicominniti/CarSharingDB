@@ -8,12 +8,12 @@ BEFORE INSERT ON CARSHARING
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
-               WHERE A.Targa=NEW.Targa);
+    	SET att = (SELECT U.Attivita
+			FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
+               		WHERE A.Targa=NEW.Targa);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
 END$$
 
@@ -25,18 +25,17 @@ BEFORE INSERT ON CARPOOLING
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
-               WHERE A.Targa=NEW.Targa);
+    	SET att = (SELECT U.Attivita
+			FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
+              	 	WHERE A.Targa=NEW.Targa);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
     
-    IF (NEW.GradoFlessibilita != "alto" AND NEW.GradoFlessibilita != "medio" AND NEW.GradoFlessibilita != "basso")
-       THEN
+    	IF (NEW.GradoFlessibilita != "alto" AND NEW.GradoFlessibilita != "medio" AND NEW.GradoFlessibilita != "basso") THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Grado di flessibilità pool non valido';
+        	SET MESSAGE_TEXT = 'Grado di flessibilità pool non valido';
 	END IF;
 END$$
 
@@ -46,12 +45,12 @@ BEFORE INSERT ON RIDESHARING
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
-               WHERE A.Targa=NEW.Targa);
+    	SET att = (SELECT U.Attivita
+			FROM UTENTE U INNER JOIN AUTOVETTURA A on U.NomeUtente=A.NomeUtente
+               		WHERE A.Targa=NEW.Targa);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
 END$$
 
@@ -61,12 +60,12 @@ BEFORE INSERT ON RICHIESTA
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U
-               WHERE U.NomeUtente=NEW.NomeUtenteF);
+   	SET att = (SELECT U.Attivita
+			FROM UTENTE U
+              		WHERE U.NomeUtente=NEW.NomeUtenteF);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
 END$$
 
@@ -76,17 +75,17 @@ BEFORE INSERT ON PRENOTAZIONE
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U
-               WHERE U.NomeUtente=NEW.NomeUtenteF);
+    	SET att = (SELECT U.Attivita
+			FROM UTENTE U
+               		WHERE U.NomeUtente=NEW.NomeUtenteF);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
     
-    IF TIMESTAMPDIFF(HOUR, CURRENT_TIMESTAMP(), '2018-12-27 07:20:00')<=1 THEN
+    	IF TIMESTAMPDIFF(HOUR, CURRENT_TIMESTAMP(), '2018-12-27 07:20:00')<=1 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tempo per prenotare il pool scaduto';
+        	SET MESSAGE_TEXT = 'Tempo per prenotare il pool scaduto';
 	END IF;
 END$$
 
@@ -96,12 +95,12 @@ BEFORE INSERT ON CHIAMATA
 FOR EACH ROW
 BEGIN
 	DECLARE att CHAR(2);
-    SET att = (SELECT U.Attivita
-			   FROM UTENTE U
-               WHERE U.NomeUtente=NEW.NomeUtenteF);
+    	SET att = (SELECT U.Attivita
+			FROM UTENTE U
+               		WHERE U.NomeUtente=NEW.NomeUtenteF);
 	IF att = 'no' THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Untente non ancora attivato';
+        	SET MESSAGE_TEXT = 'Untente non ancora attivato';
 	END IF;
 END$$
 
@@ -113,17 +112,17 @@ BEFORE INSERT ON UTENTE
 FOR EACH ROW
 BEGIN
 	DECLARE l_pwd INTEGER;
-    DECLARE l_codF INTEGER;
-    SET l_pwd = (SELECT CHAR_LENGTH(NEW.password));
+    	DECLARE l_codF INTEGER;
+    	SET l_pwd = (SELECT CHAR_LENGTH(NEW.password));
 	IF l_pwd<=8 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Password non sicura';
+        	SET MESSAGE_TEXT = 'Password non sicura';
 	END IF;
     
-    SET l_codF = (SELECT CHAR_LENGTH(NEW.codFiscale));
+    	SET l_codF = (SELECT CHAR_LENGTH(NEW.codFiscale));
 	IF l_codF != 16 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Codice fiscale non valido';
+        	SET MESSAGE_TEXT = 'Codice fiscale non valido';
 	END IF;
 END$$
 
@@ -133,16 +132,16 @@ DROP PROCEDURE IF EXISTS aggiornaDocumento$$
 CREATE PROCEDURE aggiornaDocumento(IN utente1 CHAR(15), IN NuovaDataScadenza date)
 BEGIN
 	DECLARE numero_documento VARCHAR(50);
-    DECLARE tipologia_documento VARCHAR(100);
-    SET numero_documento = (SELECT U.NumeroD
-							FROM UTENTE U
-							WHERE U.NomeUtente=utente1);
+    	DECLARE tipologia_documento VARCHAR(100);
+    	SET numero_documento = (SELECT U.NumeroD
+					FROM UTENTE U
+					WHERE U.NomeUtente=utente1);
 	SET tipologia_documento = (SELECT U.TipologiaD
-							   FROM UTENTE U
-							   WHERE U.NomeUtente=utente1);
+					FROM UTENTE U
+					WHERE U.NomeUtente=utente1);
 	UPDATE DOCUMENTO SET ScadenzaD = NuovaDataScadenza
-    WHERE NumeroD = numero_documento
-		  AND TipologiaD = tipologia_documento;
+    	WHERE NumeroD = numero_documento
+		AND TipologiaD = tipologia_documento;
 END $$
 
 /*Vincolo 6, 7, 8*/
@@ -155,30 +154,30 @@ BEGIN
 	DECLARE l_targa INTEGER;
 	IF NEW.Comfort<0 OR NEW.Comfort>5 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Livello comfort non valido';
+        	SET MESSAGE_TEXT = 'Livello comfort non valido';
 	END IF;
     
-    SET l_targa = (SELECT CHAR_LENGTH(NEW.Targa));
+    	SET l_targa = (SELECT CHAR_LENGTH(NEW.Targa));
 	IF l_targa != 7 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Targa non valida';
+        	SET MESSAGE_TEXT = 'Targa non valida';
 	END IF;
     
-    IF (NEW.Carburante1 != "Benzina" AND 
+    	IF (NEW.Carburante1 != "Benzina" AND 
 		NEW.Carburante1 != "Gasolio" AND
-	    NEW.Carburante1 != "Gpl" AND 
-        NEW.Carburante1 != "Metano" AND 
-        NEW.Carburante1 != "Elettrica")
-       OR
-       (NEW.Carburante2 != "Benzina" AND 
-        NEW.Carburante2 != "Gasolio" AND
-	    NEW.Carburante2 != "Gpl" AND 
-        NEW.Carburante2 != "Metano" AND 
-        NEW.Carburante2 != "Elettrica" AND 
-        NEW.Carburante2 != NULL)
-       THEN
+	    	NEW.Carburante1 != "Gpl" AND 
+        	NEW.Carburante1 != "Metano" AND 
+        	NEW.Carburante1 != "Elettrica")
+       	    OR
+       		(NEW.Carburante2 != "Benzina" AND 
+        	NEW.Carburante2 != "Gasolio" AND
+	    	NEW.Carburante2 != "Gpl" AND 
+        	NEW.Carburante2 != "Metano" AND 
+        	NEW.Carburante2 != "Elettrica" AND 
+        	NEW.Carburante2 != NULL)
+       	    THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tipologia carburanti auto non valida';
+        	SET MESSAGE_TEXT = 'Tipologia carburanti auto non valida';
 	END IF;
 END$$
 
@@ -190,21 +189,20 @@ BEFORE INSERT ON VALUTAZIONE
 FOR EACH ROW
 BEGIN
 	IF (NEW.Persona<1 OR NEW.Persona>5)
-	   OR
-	   (NEW.Comportamento<1 OR NEW.Comportamento>5)
-       OR
-       (NEW.Serieta<1 OR NEW.Serieta>5)
-       OR
-	   (NEW.PiacereViaggio<1 OR NEW.PiacereViaggio>5)
-       THEN
+		OR
+	   	(NEW.Comportamento<1 OR NEW.Comportamento>5)
+       		OR
+       		(NEW.Serieta<1 OR NEW.Serieta>5)
+       		OR
+	   	(NEW.PiacereViaggio<1 OR NEW.PiacereViaggio>5)
+        THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Valutazione non valida';
+        	SET MESSAGE_TEXT = 'Valutazione non valida';
 	END IF;
     
-    IF (NEW.CodiceServizio<1 OR NEW.CodiceServizio>3)
-       THEN
+    	IF (NEW.CodiceServizio<1 OR NEW.CodiceServizio>3) THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Codice servizio non valido';
+        	SET MESSAGE_TEXT = 'Codice servizio non valido';
 	END IF;
 END$$
 
@@ -216,15 +214,14 @@ BEFORE UPDATE ON RICHIESTA
 FOR EACH ROW
 BEGIN 
 	DECLARE carburante_inizio TINYINT;
-    SET carburante_inizio = (SELECT Carburante 
-							 FROM CARSHARING C
-                             WHERE C.CodiceServizio=OLD.CodiceServizio AND
-								   C.DataOraInizio=OLD.DataOraInizio AND
-                                   C.Targa=OLD.Targa);
-	IF (carburante_inizio<NEW.CarburanteFine-5)
-       THEN
+    	SET carburante_inizio = (SELECT Carburante 
+					FROM CARSHARING C
+                             		WHERE C.CodiceServizio=OLD.CodiceServizio AND
+				  		C.DataOraInizio=OLD.DataOraInizio AND
+                                   		C.Targa=OLD.Targa);
+	IF (carburante_inizio<NEW.CarburanteFine-5) THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Impossibile restituire il veicolo, livello di benzina errato';
+        	SET MESSAGE_TEXT = 'Impossibile restituire il veicolo, livello di benzina errato';
 	END IF;
 END$$
 
@@ -235,10 +232,9 @@ CREATE TRIGGER check_esito
 BEFORE UPDATE ON PRENOTAZIONE
 FOR EACH ROW
 BEGIN 
-	IF (NEW.Esito != "pending" AND NEW.Esito != "accepted" AND NEW.Esito != "rejected")
-       THEN
+	IF (NEW.Esito != "pending" AND NEW.Esito != "accepted" AND NEW.Esito != "rejected") THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Esito prenotazione non valido';
+        	SET MESSAGE_TEXT = 'Esito prenotazione non valido';
 	END IF;
 END$$
 
@@ -249,16 +245,14 @@ CREATE TRIGGER check_identifStrada
 BEFORE INSERT ON IDENTIFICATORESTRADA
 FOR EACH ROW
 BEGIN 
-	IF (NEW.Cat != "dir" AND NEW.Cat != "var" AND NEW.Cat != "racc" AND  NEW.Cat != "radd" AND NEW.Cat!= "-")
-       THEN
+	IF (NEW.Cat != "dir" AND NEW.Cat != "var" AND NEW.Cat != "racc" AND  NEW.Cat != "radd" AND NEW.Cat!= "-") THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Categorizzazione non valida';
+        	SET MESSAGE_TEXT = 'Categorizzazione non valida';
 	END IF;
     
-    IF (NEW.Suffisso != "bis" AND NEW.Suffisso != "ter" AND  NEW.Suffisso != "quater")
-       THEN
+    	IF (NEW.Suffisso != "bis" AND NEW.Suffisso != "ter" AND  NEW.Suffisso != "quater") THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Suffisso non valido';
+        	SET MESSAGE_TEXT = 'Suffisso non valido';
 	END IF;
 END$$
 
@@ -269,10 +263,9 @@ CREATE TRIGGER check_suffisso
 BEFORE INSERT ON CARREGGIATA
 FOR EACH ROW
 BEGIN 
-	IF (NEW.SensiMarcia<1 OR  NEW.SensiMarcia>2)
-       THEN
+	IF (NEW.SensiMarcia<1 OR  NEW.SensiMarcia>2) THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Numero sensi di marcia non valido';
+        	SET MESSAGE_TEXT = 'Numero sensi di marcia non valido';
 	END IF;
 END$$
 
@@ -285,13 +278,13 @@ FOR EACH ROW
 BEGIN 
 	IF (NEW.Tipologia != "A" AND
 		NEW.Tipologia != "SS" AND
-        NEW.Tipologia != "SR" AND
-        NEW.Tipologia != "SP" AND
-        NEW.Tipologia != "SC" AND
-        NEW.Tipologia != "SV")
-       THEN
+        	NEW.Tipologia != "SR" AND
+        	NEW.Tipologia != "SP" AND
+        	NEW.Tipologia != "SC" AND
+        	NEW.Tipologia != "SV")
+      	THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tipologia strada non valida';
+        	SET MESSAGE_TEXT = 'Tipologia strada non valida';
 	END IF;
 END$$
 
@@ -304,9 +297,9 @@ FOR EACH ROW
 BEGIN 
 	IF (NEW.Tipo != "principale" AND
 		NEW.Tipo != "secondaria")
-       THEN
+        THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tipo strada extraurbana non valido';
+        	SET MESSAGE_TEXT = 'Tipo strada extraurbana non valido';
 	END IF;
 END$$
 
@@ -318,16 +311,15 @@ BEFORE INSERT ON VALUTAZIONE
 FOR EACH ROW
 BEGIN 
 	DECLARE l_recTesto INTEGER;
-	IF (NEW.Flag < 1 OR NEW.Flag > 2)
-       THEN
+	IF (NEW.Flag < 1 OR NEW.Flag > 2) THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Flag valutazion non valido non valido';
+        	SET MESSAGE_TEXT = 'Flag valutazion non valido non valido';
 	END IF;
     
-    SET l_recTesto = (SELECT CHAR_LENGTH(NEW.RecensioneTesto));
+    	SET l_recTesto = (SELECT CHAR_LENGTH(NEW.RecensioneTesto));
 	IF l_recTesto<10 OR l_recTesto>500 THEN
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Recensione testuale troppo corta/lunga';
+        	SET MESSAGE_TEXT = 'Recensione testuale troppo corta/lunga';
 	END IF;
 END$$
 
@@ -338,9 +330,9 @@ CREATE TRIGGER controlla_lat
 BEFORE INSERT ON CHILOMETRO
 FOR EACH ROW 
 BEGIN 
-		IF (NEW.latitudine REGEXP '(N|S),([0-8][0-9]|90),([0-8][0-9]|90),([0-8][0-9]|90)' ) = 0 THEN 
-			SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'dominio ingresso errato!';
+	IF (NEW.latitudine REGEXP '(N|S),([0-8][0-9]|90),([0-8][0-9]|90),([0-8][0-9]|90)' ) = 0 THEN 
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'dominio ingresso errato!';
 	END IF; 
 END$$
 
@@ -349,9 +341,9 @@ CREATE TRIGGER controlla_long
 BEFORE INSERT ON CHILOMETRO
 FOR EACH ROW 
 BEGIN 
-		IF 	(NEW.longitudine REGEXP	'(O|E),(0[0-9][0-9]|1[0-7][0-9]|180),(0[0-9][0-9]|1[0-7][0-9]|180),(0[0-9][0-9]|1[0-7][0-9]|180)') = 0 THEN 
-			SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'dominio ingresso errato!';
+	IF(NEW.longitudine REGEXP '(O|E),(0[0-9][0-9]|1[0-7][0-9]|180),(0[0-9][0-9]|1[0-7][0-9]|180),(0[0-9][0-9]|1[0-7][0-9]|180)') = 0 THEN 
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'dominio ingresso errato!';
 	END IF;
 END$$
 
@@ -378,22 +370,22 @@ BEGIN
 	DECLARE punteggio_posti INTEGER DEFAULT 0;
 	DECLARE punteggio_vmax 	INTEGER DEFAULT 0;
 	DECLARE Noptional INTEGER DEFAULT 0;
-    DECLARE AppTarga CHAR(7);
-    DECLARE AppPosti INT;
-    DECLARE AppVelocitaMax TINYINT;
+    	DECLARE AppTarga CHAR(7);
+    	DECLARE AppPosti INT;
+    	DECLARE AppVelocitaMax TINYINT;
 	DECLARE val FLOAT;
-    DECLARE finito INT DEFAULT 0;
+   	DECLARE finito INT DEFAULT 0;
     
-    DECLARE cursore CURSOR FOR
-    SELECT Targa, Posti, VelocitaMax
-    FROM AUTOVETTURA
-    WHERE Comfort = 0;
+    	DECLARE cursore CURSOR FOR
+    	SELECT Targa, Posti, VelocitaMax
+    	FROM AUTOVETTURA
+    	WHERE Comfort = 0;
     
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finito=1;
+    	DECLARE CONTINUE HANDLER FOR NOT FOUND SET finito=1;
     
-    scan: LOOP
+    	scan: LOOP
 		FETCH cursore INTO AppTarga, AppPosti, AppVelocitaMax;
-        IF finito = 1 THEN 
+        	IF finito = 1 THEN 
 			LEAVE scan;
 		END IF;
         
@@ -407,7 +399,7 @@ BEGIN
 			WHEN 2 THEN SET punteggio_posti = 2;
 			WHEN 4 THEN SET punteggio_posti = 3;
 			WHEN 5 THEN SET punteggio_posti = 4;
-			ELSE	SET punteggio_posti=5;
+			ELSE SET punteggio_posti=5;
 		END CASE;
 		
 		CASE AppVelocitaMax
