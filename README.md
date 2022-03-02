@@ -10,3 +10,7 @@ With a view to smart mobility, the company's customers can register on the site 
 [Here](specifiche.pdf) (in Italian) are present more information and details about specific requirements and the application domain.
 
 All the phases of the design and implementation project of the project are detailed [Documentation](documentazione.pdf) (in Italian).
+
+## Goals are ...
+- To create a relational database 
+- To implement the database in MySql
