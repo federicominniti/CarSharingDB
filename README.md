@@ -11,7 +11,7 @@ With a view to smart mobility, the company's customers can register on the site 
 
 All the phases of the design and implementation project of the project are detailed [Documentation](documentazione.pdf) (in Italian).
 
-(Repository for databases project)
+(Repository for the databases' project)
 
 ## Goals are:
 - To create a relational database 
